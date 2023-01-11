@@ -9,9 +9,18 @@ import axios from "axios";
 function App() {
 
   const [movies,setMovies] = useState([])
+  const [pageCount, setPageCount] = useState(0)
   const getAllMovies = async () => {
     const res = await axios.get("https://api.themoviedb.org/3/movie/popular?api_key=52ef927bbeb21980cd91386a29403c78&language=ar")
     setMovies(res.data.results)
+    setPageCount(300)
+  }
+
+  //get current page
+  const getPage = async (page) => {
+    const res = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=52ef927bbeb21980cd91386a29403c78&language=ar&page=${page}`)
+    setMovies(res.data.results)
+    setPageCount(300)
   }
   // console.log(movies);
   useEffect(()=> {
@@ -23,7 +32,7 @@ function App() {
   const handleChange = (title) => {
     setSearchMovie(title)
   }
-  
+
   let searched = movies.filter(movie => movie.original_title.toLowerCase().includes(searchMovie.toLocaleLowerCase()))
 
   return (
@@ -36,8 +45,9 @@ function App() {
       />
       <Container>
             <MoviesList 
-              // movies = { movies }
               searched = { searched }
+              getPage = { getPage }
+              pageCount = { pageCount }
             />
 
             {/* <MovieDetails /> */}
